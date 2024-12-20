@@ -122,7 +122,11 @@ const arr2 = [4, 5, 6];
 //Funksiyaga istalgan miqdordagi argumentlarni yuboring va rest operator yordamida ularni bir massiv sifatida qabul qiling. Har bir elementni kvadratga ko‘paytirib qaytaring.
 
 function squareNumbers(...numbers) {
-  // Bu yerda kod yozing
+  const [...a] = numbers;
+  a.forEach((number) => {
+    number = number ** 2;
+  });
+  return a;
 }
 
 console.log(squareNumbers(2, 3, 4)); // [4, 9, 16]
@@ -133,7 +137,8 @@ console.log(squareNumbers(2, 3, 4)); // [4, 9, 16]
 
 const user1 = { name: "Ali", age: 25 };
 const updatedUser = {
-  // Bu yerda spread operatoridan foydalaning
+  ...user1,
+  phone: +998911234567,
 };
 
 console.log(updatedUser);
@@ -142,24 +147,26 @@ console.log(updatedUser);
 // 10-masala:
 //Quyidagi kodni hoisting qoidasiga asoslanib tahlil qiling va qaysi qatorda xatolik yuz berishini tushuntiring.
 
-console.log(a); // ?
 var a = 10;
-
-console.log(b); // ?
+console.log(a); // ?
+// bu yerda var yordamida ozgaruvchi anoqlanib va  undan oldin chaqirilyapti
+// bu yerda konsolda undefiened dgan narsa chqadi
 let b = 20;
-
+console.log(b); // ?
+// bu yerdaham huddi shu hato ketyapti
+// buni yechimi ozgaruvchilarni konsolga chaqirishdan oldin ularni belgilashimiz kerak
 test();
 function test() {
   console.log("Test function called");
 }
+// Regular functioni shohi borligi uchun uni birinchi chaqirib kiyin qiymatlar briktirsak boladi
 
 // ============
 // 11-masala:
 //TDZ haqida tushuncha hosil qilish uchun quyidagi kodni to‘ldiring va xatoni tushuntiring.
-
-console.log(x1); // Xato
 let x1 = 5;
-
+console.log(x1); // Xato
+// bu kodda biz ozgaruvchini elon qilishdan oldin qiymatini consolega chiqarmqchi bolyapmiz buni yechimi ozgaruvchini birinchi elon qilish kerak boladi
 // ============
 // 11.1-masala:
 // Quyidagi kodning ishlash tartibini tushuntiring.
@@ -167,74 +174,115 @@ let x1 = 5;
 var X = 10;
 
 function example() {
-  console.log(X); // ?
-  var x = 20;
-  console.log(X); // ?
+  console.log(X); // 10
+  var x = 20; // bu ozgaruvchini qiymatini chaqirib bolmaydi chunki uni nomlanishi x biz chaqirmoqchi bolgan ozgaruvchi X bolgani sabab
+  console.log(X); // 10
 }
-
+// agarda biz funksiyani ichidagi ozgaruvchi nomini Xga ozgartisak birinchi marta chaqirganimzda undefined ikinchi marta esa bizga keraklik qiymat chiqadi chunki function scope ichida hoisting hodisasi bajarilyapti bunda var a ni ozi tepaga chiqyaptida uni qiymati korinmayapti toki uni qiymati belgilangan joyga kelmaguncha
 example();
 
 // ============
 // 12-masala:
 //Ikkita fayl yarating. Birinchi faylda sum va multiply funksiyalarini yozing va ularni eksport qiling. Ikkinchi faylda ushbu funksiyalarni import qiling va ulardan foydalaning.
 
-// module.js
-export function sum(a, b) {
-  return a + b;
-}
-
-export function multiply(a, b) {
-  return a * b;
-}
-
 // main.js
-
+import { sum, multiply } from "./module.js";
+console.log(sum(1, 2));
+console.log(multiply(1, 2));
 // ============
 // 13-masala:
 //Default eksportdan foydalaning. Bir faylda greet funksiyasini default qilib eksport qiling va boshqa faylda uni import qilib ishlating.
 
-// greet.js
-export default function greet(name) {
-  return `Hello, ${name}!`;
-}
-
 // main.js
+
+import greet from "./great.js";
+
+console.log(greet("Man"));
 
 // ============
 // 14-masala:
 //Modullarda nom o‘zgarishini sinab ko‘ring. Quyidagi funksiyani eksport qiling va import qiling, lekin boshqa nom bilan foydalaning.
 
-// math.js
-export function divide(a, b) {
-  return a / b;
-}
-
 // main.js
+
+import { divide as myDivide } from "./math.js";
+
+console.log(myDivide(4, 2));
 
 // ============
 // 15-masala:
 // Funksiya massiv ichidagi isActive: true qiymatiga ega foydalanuvchilarni qaytarishi kerak.
+const users = [
+  { Name: "John", isActive: true, age: 18 },
+  { Name: "Nikola", isActive: true, age: 20 },
+  { Name: "Natali", isActive: false, age: 12 },
+  { Name: "Anderson", isActive: true, age: 15 },
+  { Name: "Andrey", isActive: false, age: 27 },
+];
 
+const checkIsActive = () => {
+  const res = users.filter((user) => {
+    if (user.isActive) {
+      return user;
+    }
+  });
+  return res;
+};
+
+console.log(checkIsActive());
 // ============
 // 16-masala:
 // Funksiya foydalanuvchilarni age qiymatiga qarab o‘sish tartibida saralashi kerak.
+const checkAge = () => {
+  return users.sort((a, b) => b.age - a.age);
+};
 
+console.log(checkAge());
 // ============
 // 17-masala:
 // Funksiya ismni qabul qilib, massivdan shu ismga ega foydalanuvchini topishi kerak.
-
+const findUserWithName = (userName) => {
+  const res = users.map((user) => {
+    if (user.Name === userName) {
+      return user;
+    }
+  });
+  return res;
+};
 // ============
 // 18-masala:
 //Funksiya foydalanuvchilarning yoshlarining o‘rtacha qiymatini qaytarishi kerak.
-
+const sredneyeZnacheniyeAge = () => {
+  let sum = 0;
+  let count = 0;
+  users.forEach((user) => {
+    count++;
+    sum += user.age;
+  });
+  let res = sum / count;
+  return res;
+};
 // ============
 // 19-masala:
 // Funksiya minimal va maksimal yoshni qabul qilib, shu yosh oralig‘idagi foydalanuvchilarni qaytarishi kerak.
-
+const outputUser = (maxAge, minAge) => {
+  const res = users.filter(user => {
+    if(user.age < maxAge && user.age > minAge){
+      return user
+    }
+  })
+  return res
+}
 // ============
 // 20-masala:
 // Funksiya kategoriya nomini qabul qilib, shu kategoriyaga tegishli mahsulotlarni qaytarishi kerak.
-
+const inputCatrgoryName = (categoryName) => {
+  users.forEach(user => {
+    if(user.categoryName !== undefined){
+      console.log(user.categoryName)
+    }
+  })
+}
 // ============
 // 21-masala:
 // Funksiya massivdagi eng qimmat mahsulotni qaytarishi kerak.
